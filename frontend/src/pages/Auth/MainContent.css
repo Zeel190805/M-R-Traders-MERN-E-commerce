@@ -1,0 +1,15 @@
+.main-content {
+    padding: 20px;
+    flex-grow: 1;
+    transition: margin-left 0.3s ease-in-out;
+    text-align: right;
+    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    font-size: 3.75rem;
+    /* 24px */
+    line-height: 8rem;
+    margin-right: 4rem;
+    /* 32px */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
