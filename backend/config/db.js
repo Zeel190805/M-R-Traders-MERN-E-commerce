@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const uri = process.env.MONGO_URI;
-// console.log('Mongo URI:', uri);  // This should log the URI from the .env file
+console.log('Mongo URI:', uri);  // This should log the URI from the .env file
 
 const connectDB = async () => {
   try {
