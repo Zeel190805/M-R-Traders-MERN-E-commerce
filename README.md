@@ -6,3 +6,6 @@ MONGO_URI=""
 JWT_SECRET=
 
 
+go to your root directory
+run code  : npm i 
+after run code  :  npm run dev 
