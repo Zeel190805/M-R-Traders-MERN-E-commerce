@@ -3,6 +3,8 @@ import formidable from "express-formidable";
 const router = express.Router();
 
 // controllers
+import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
+import checkId from "../middlewares/checkId.js";
 import {
   addProduct,
   updateProductDetails,
@@ -15,13 +17,11 @@ import {
   fetchNewProducts,
   filterProducts,
 } from "../controllers/productController.js";
-import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
-import checkId from "../middlewares/checkId.js";
 
 router
   .route("/")
   .get(fetchProducts)
-  .post(authenticate, authorizeAdmin, formidable(), addProduct);
+ .post(authenticate, authorizeAdmin, formidable(), addProduct);
 
 router.route("/allproducts").get(fetchAllProducts);
 router.route("/:id/reviews").post(authenticate, checkId, addProductReview);

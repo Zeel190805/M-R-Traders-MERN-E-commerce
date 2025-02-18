@@ -10,7 +10,7 @@ const MainContent = () => {
     <>
       {authPaths.includes(location.pathname) && (
         <div className="main-content">
-          <h1>Welcome to MR Traders</h1>
+          <h1>Welcome To MR Traders</h1>
         </div>
       )}
     </>

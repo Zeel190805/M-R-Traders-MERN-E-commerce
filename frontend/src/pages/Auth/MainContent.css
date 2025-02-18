@@ -4,11 +4,11 @@
     transition: margin-left 0.3s ease-in-out;
     text-align: right;
     font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    font-size: 3.75rem;
-    /* 24px */
-    line-height: 8rem;
+    margin-top: 2rem;
+    font-size: 4.5rem;
+    line-height: 5rem;
     margin-right: 4rem;
-    /* 32px */
+    font-weight: 2rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }

@@ -11,6 +11,7 @@ const Home = () => {
 
   return (
     <>
+    
       {!keyword ? <Header /> : null}
       {isLoading ? (
         <Loader />
@@ -20,6 +21,7 @@ const Home = () => {
         </Message>
       ) : (
         <>
+        
           <div className="flex justify-between items-center">
             <h1 className="ml-[20rem] mt-[10rem] text-[3rem]">
               Special Products

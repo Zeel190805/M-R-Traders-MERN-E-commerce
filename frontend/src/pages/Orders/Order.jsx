@@ -16,7 +16,7 @@ const Order = () => {
   const { id: orderId } = useParams();
 
   const {
-    data: order,
+    data: order,  
     refetch,
     isLoading,
     error,
