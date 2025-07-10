@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetFilteredProductsQuery } from "../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../redux/api/categoryApiSlice";
+import Message from "../components/Message";
 
 import {
   setCategories,
@@ -81,28 +82,28 @@ const Shop = () => {
   };
 
   return (
-    <>
-      <div className="container mx-auto">
-        <div className="flex md:flex-row">
-          <div className="bg-[#151515] p-3 mt-2 mb-2">
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
+    <div className="bg-darkBackground text-lightText min-h-screen pt-8">
+      <div className="container mx-auto px-4 py-8 animate-fadeIn">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Filter Sidebar */}
+          <div className="w-full md:w-1/4 bg-gray-900 p-6 rounded-lg shadow-xl animate-slideInLeft">
+            <h2 className="text-xl font-bold text-center text-primary py-3 rounded-full mb-4">
               Filter by Categories
             </h2>
 
-            <div className="p-5 w-[15rem]">
+            <div className="p-4">
               {categories?.map((c) => (
-                <div key={c._id} className="mb-2">
-                  <div className="flex ietms-center mr-4">
+                <div key={c._id} className="mb-3">
+                  <div className="flex items-center">
                     <input
                       type="checkbox"
-                      id="red-checkbox"
+                      id={`category-${c._id}`}
                       onChange={(e) => handleCheck(e.target.checked, c._id)}
-                      className="w-4 h-4 text-pink-600 bg-gray-100 border-gray-300 rounded focus:ring-pink-500 dark:focus:ring-pink-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 rounded focus:ring-primary focus:ring-2"
                     />
-
                     <label
-                      htmlFor="pink-checkbox"
-                      className="ml-2 text-sm font-medium text-white dark:text-gray-300"
+                      htmlFor={`category-${c._id}`}
+                      className="ml-3 text-sm font-medium text-lightText"
                     >
                       {c.name}
                     </label>
@@ -111,65 +112,67 @@ const Shop = () => {
               ))}
             </div>
 
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
+            <h2 className="text-xl font-bold text-center text-primary py-3 rounded-full mb-4">
               Filter by Brands
             </h2>
 
-            <div className="p-5">
+            <div className="p-4">
               {uniqueBrands?.map((brand) => (
-                <>
-                  <div className="flex items-enter mr-4 mb-5">
+                <div key={brand} className="mb-3">
+                  <div className="flex items-center">
                     <input
                       type="radio"
-                      id={brand}
+                      id={`brand-${brand}`}
                       name="brand"
                       onChange={() => handleBrandClick(brand)}
-                      className="w-4 h-4 text-pink-400 bg-gray-100 border-gray-300 focus:ring-pink-500 dark:focus:ring-pink-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 text-primary bg-gray-700 border-gray-600 focus:ring-primary focus:ring-2"
                     />
-
                     <label
-                      htmlFor="pink-radio"
-                      className="ml-2 text-sm font-medium text-white dark:text-gray-300"
+                      htmlFor={`brand-${brand}`}
+                      className="ml-3 text-sm font-medium text-lightText"
                     >
                       {brand}
                     </label>
                   </div>
-                </>
+                </div>
               ))}
             </div>
 
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Filer by Price
+            <h2 className="text-xl font-bold text-center text-primary py-3 rounded-full mb-4">
+              Filter by Price
             </h2>
 
-            <div className="p-5 w-[15rem]">
+            <div className="p-4">
               <input
                 type="text"
                 placeholder="Enter Price"
                 value={priceFilter}
                 onChange={handlePriceChange}
-                className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:border-pink-300"
+                className="w-full px-4 py-2 bg-gray-700 text-lightText border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
               />
             </div>
 
-            <div className="p-5 pt-0">
+            <div className="p-4 pt-0">
               <button
-                className="w-full border my-4"
+                className="w-full bg-secondary text-white font-bold py-2 rounded-full shadow-lg hover:bg-teal-700 transition-all duration-300 transform hover:scale-105"
                 onClick={() => window.location.reload()}
               >
-                Reset
+                Reset Filters
               </button>
             </div>
           </div>
 
-          <div className="p-3">
-            <h2 className="h4 text-center mb-2">{products?.length} Products</h2>
-            <div className="flex flex-wrap">
+          {/* Product Display */}
+          <div className="w-full md:w-3/4 p-3 animate-slideInRight">
+            <h2 className="text-2xl font-bold text-center text-primary mb-6">
+              {products?.length} Products
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.length === 0 ? (
-                <Loader />
+                <Message variant="info">No products found.</Message>
               ) : (
-                products?.map((p) => (
-                  <div className="p-3" key={p._id}>
+                products?.map((p, index) => (
+                  <div key={p._id} className="animate-fadeIn" style={{ animationDelay: `${index * 0.1}s` }}>
                     <ProductCard p={p} />
                   </div>
                 ))
@@ -178,7 +181,7 @@ const Shop = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

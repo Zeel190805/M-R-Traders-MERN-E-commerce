@@ -11,7 +11,6 @@ const Home = () => {
 
   return (
     <>
-    
       {!keyword ? <Header /> : null}
       {isLoading ? (
         <Loader />
@@ -20,31 +19,30 @@ const Home = () => {
           {isError?.data.message || isError.error}
         </Message>
       ) : (
-        <>
-        
-          <div className="flex justify-between items-center">
-            <h1 className="ml-[20rem] mt-[10rem] text-[3rem]">
-              Special Products
-            </h1>
+        <div className="bg-darkBackground text-lightText min-h-screen pt-8">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-16 animate-fadeIn">
+              <h1 className="text-4xl md:text-5xl font-extrabold text-primary mb-4 md:mb-0 animate-slideInLeft">
+                Special Products
+              </h1>
 
-            <Link
-              to="/shop"
-              className="bg-pink-600 font-bold rounded-full py-2 px-10 mr-[18rem] mt-[10rem]"
-            >
-              Shop
-            </Link>
-          </div>
+              <Link
+                to="/shop"
+                className="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-pink-700 transition-all duration-300 transform hover:scale-105 animate-slideInRight"
+              >
+                Shop All Products
+              </Link>
+            </div>
 
-          <div>
-            <div className="flex justify-center flex-wrap mt-[2rem]">
-              {data.products.map((product) => (
-                <div key={product._id}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {data.products.map((product, index) => (
+                <div key={product._id} className="animate-fadeIn" style={{ animationDelay: `${index * 0.1}s` }}>
                   <Product product={product} />
                 </div>
               ))}
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

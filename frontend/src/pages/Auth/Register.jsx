@@ -7,7 +7,6 @@ import { setCredentials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import MainContent from './brand';
 
-
 const Register = () => {
   const [username, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -50,74 +49,61 @@ const Register = () => {
   };
 
   return (
-    <section className="pl-[8rem] flex flex-wrap ml-[10rem]">
-      <MainContent />
-      <div className="mr-[4rem] mt-[1rem] ">
-        <h1 className="text-2xl font-semibold mb-4">Register</h1>
+    <div className="flex justify-center items-center min-h-screen bg-darkBackground animate-fadeIn">
+      <div className="w-full max-w-md p-8 rounded-lg shadow-xl bg-gray-800 animate-slideInRight">
+        <h2 className="text-3xl font-bold text-center text-primary mb-6">Register</h2>
 
-        <form onSubmit={submitHandler} className="container w-[40rem]">
-          <div className="my-[2rem]">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-white"
-            >
+        <form onSubmit={submitHandler}>
+          <div className="mb-4">
+            <label className="block text-lightText text-sm font-bold mb-2" htmlFor="username">
               Name
             </label>
             <input
               type="text"
-              id="name"
-              className="mt-1 p-2 border rounded w-full"
+              id="username"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText"
               placeholder="Enter name"
               value={username}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
 
-          <div className="my-[2rem]">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-white"
-            >
+          <div className="mb-4">
+            <label className="block text-lightText text-sm font-bold mb-2" htmlFor="email">
               Email Address
             </label>
             <input
               type="email"
               id="email"
-              className="mt-1 p-2 border rounded w-full"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText"
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <div className="my-[2rem]">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-white"
-            >
+          <div className="mb-4">
+            <label className="block text-lightText text-sm font-bold mb-2" htmlFor="password">
               Password
             </label>
             <input
               type="password"
               id="password"
-              className="mt-1 p-2 border rounded w-full"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText"
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          <div className="my-[2rem]">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-white"
-            >
+          <div className="mb-6">
+            <label className="block text-lightText text-sm font-bold mb-2" htmlFor="confirmPassword">
               Confirm Password
             </label>
             <input
               type="password"
               id="confirmPassword"
-              className="mt-1 p-2 border rounded w-full"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText"
               placeholder="Confirm password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -127,7 +113,7 @@ const Register = () => {
           <button
             disabled={isLoading}
             type="submit"
-            className="bg-pink-500 text-white px-4 py-2 rounded cursor-pointer my-[1rem]"
+            className="bg-primary hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline transition-all duration-300 transform hover:scale-105"
           >
             {isLoading ? "Registering..." : "Register"}
           </button>
@@ -135,20 +121,20 @@ const Register = () => {
           {isLoading && <Loader />}
         </form>
 
-        <div className="mt-4">
-          <p className="text-white">
-            Already have an account?{" "}
+        <div className="mt-6 text-center animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+          <p className="text-lightText">
+            Already have an account?
             <Link
               to={redirect ? `/login?redirect=${redirect}` : "/login"}
-              className="text-pink-500 hover:underline"
+              className="text-secondary hover:underline ml-2"
             >
               Login
             </Link>
           </p>
         </div>
       </div>
-      
-    </section>
+      <MainContent />
+    </div>
   );
 };
 

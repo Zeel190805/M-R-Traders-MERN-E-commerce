@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
+import { AiOutlineMenu } from "react-icons/ai";
 
 const AdminMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,87 +13,74 @@ const AdminMenu = () => {
   return (
     <>
       <button
-        className={`${
-          isMenuOpen ? "top-2 right-2" : "top-5 right-7"
-        } bg-[#151515] p-2 fixed rounded-lg`}
+        className={`fixed top-4 right-4 z-50 bg-gray-800 p-3 rounded-lg shadow-lg text-lightText transition-all duration-300 transform hover:scale-110`}
         onClick={toggleMenu}
       >
         {isMenuOpen ? (
-          <FaTimes color="white" />
+          <FaTimes size={24} color="white" />
         ) : (
-          <>
-            <div className="w-6 h-0.5 bg-gray-200 my-1"></div>
-            <div className="w-6 h-0.5 bg-gray-200 my-1"></div>
-            <div className="w-6 h-0.5 bg-gray-200 my-1"></div>
-          </>
+          <AiOutlineMenu size={24} color="white" />
         )}
       </button>
 
       {isMenuOpen && (
-        <section className="bg-[#151515] p-4 fixed right-7 top-5">
-          <ul className="list-none mt-2">
+        <section className={`fixed top-0 left-0 h-full w-64 bg-gray-900 z-40 p-6 shadow-xl transform transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="flex justify-end mb-6 md:hidden">
+            <button onClick={toggleMenu} className="text-lightText hover:text-primary transition-colors duration-300">
+              <FaTimes size={28} />
+            </button>
+          </div>
+          <ul className="list-none space-y-4">
             <li>
               <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                className="flex items-center py-2 px-4 rounded-lg text-lightText hover:bg-primary hover:text-white transition-all duration-300"
                 to="/admin/dashboard"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
+                onClick={toggleMenu}
               >
                 Admin Dashboard
               </NavLink>
             </li>
             <li>
               <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                className="flex items-center py-2 px-4 rounded-lg text-lightText hover:bg-primary hover:text-white transition-all duration-300"
                 to="/admin/categorylist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
+                onClick={toggleMenu}
               >
                 Create Category
               </NavLink>
             </li>
             <li>
               <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                className="flex items-center py-2 px-4 rounded-lg text-lightText hover:bg-primary hover:text-white transition-all duration-300"
                 to="/admin/productlist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
+                onClick={toggleMenu}
               >
                 Create Product
               </NavLink>
             </li>
             <li>
               <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                className="flex items-center py-2 px-4 rounded-lg text-lightText hover:bg-primary hover:text-white transition-all duration-300"
                 to="/admin/allproductslist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
+                onClick={toggleMenu}
               >
                 All Products
               </NavLink>
             </li>
             <li>
               <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                className="flex items-center py-2 px-4 rounded-lg text-lightText hover:bg-primary hover:text-white transition-all duration-300"
                 to="/admin/userlist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
+                onClick={toggleMenu}
               >
                 Manage Users
               </NavLink>
             </li>
             <li>
               <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                className="flex items-center py-2 px-4 rounded-lg text-lightText hover:bg-primary hover:text-white transition-all duration-300"
                 to="/admin/orderlist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
+                onClick={toggleMenu}
               >
                 Manage Orders
               </NavLink>

@@ -9,13 +9,12 @@ import {
 } from "../../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
+import Loader from "../../components/Loader";
 
 const AdminProductUpdate = () => {
   const params = useParams();
 
-  const { data: productData } = useGetProductByIdQuery(params._id);
-
-  console.log(productData);
+  const { data: productData, isLoading: loadingProduct, refetch } = useGetProductByIdQuery(params._id);
 
   const [image, setImage] = useState(productData?.image || "");
   const [name, setName] = useState(productData?.name || "");
@@ -28,19 +27,15 @@ const AdminProductUpdate = () => {
   const [brand, setBrand] = useState(productData?.brand || "");
   const [stock, setStock] = useState(productData?.countInStock);
 
-  // hook
   const navigate = useNavigate();
 
-  // Fetch categories using RTK Query
-  const { data: categories = [] } = useFetchCategoriesQuery();
+  const { data: categories = [], isLoading: loadingCategories } = useFetchCategoriesQuery();
 
-  const [uploadProductImage] = useUploadProductImageMutation();
+  const [uploadProductImage, { isLoading: uploadingImage }] = useUploadProductImageMutation();
 
-  // Define the update product mutation
-  const [updateProduct] = useUpdateProductMutation();
+  const [updateProduct, { isLoading: updatingProduct }] = useUpdateProductMutation();
 
-  // Define the delete product mutation
-  const [deleteProduct] = useDeleteProductMutation();
+  const [deleteProduct, { isLoading: deletingProduct }] = useDeleteProductMutation();
 
   useEffect(() => {
     if (productData && productData._id) {
@@ -51,6 +46,7 @@ const AdminProductUpdate = () => {
       setQuantity(productData.quantity);
       setBrand(productData.brand);
       setImage(productData.image);
+      setStock(productData.countInStock);
     }
   }, [productData]);
 
@@ -59,16 +55,10 @@ const AdminProductUpdate = () => {
     formData.append("image", e.target.files[0]);
     try {
       const res = await uploadProductImage(formData).unwrap();
-      toast.success("Item added successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
+      toast.success(res.message);
       setImage(res.image);
     } catch (err) {
-      toast.success("Item added successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
+      toast.error(err?.data?.message || err.error);
     }
   };
 
@@ -85,184 +75,177 @@ const AdminProductUpdate = () => {
       formData.append("brand", brand);
       formData.append("countInStock", stock);
 
-      // Update product using the RTK Query mutation
       const data = await updateProduct({ productId: params._id, formData });
 
       if (data?.error) {
-        toast.error(data.error, {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 2000,
-        });
+        toast.error(data.error);
       } else {
-        toast.success(`Product successfully updated`, {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 2000,
-        });
+        toast.success(`Product successfully updated`);
         navigate("/admin/allproductslist");
+        refetch();
       }
     } catch (err) {
       console.log(err);
-      toast.error("Product update failed. Try again.", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
+      toast.error("Product update failed. Try again.");
     }
   };
 
   const handleDelete = async () => {
     try {
-      let answer = window.confirm(
+      const answer = window.confirm(
         "Are you sure you want to delete this product?"
       );
       if (!answer) return;
 
       const { data } = await deleteProduct(params._id);
-      toast.success(`"${data.name}" is deleted`, {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
+      toast.success(`"${data.name}" is deleted`);
       navigate("/admin/allproductslist");
+      refetch();
     } catch (err) {
       console.log(err);
-      toast.error("Delete failed. Try again.", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
+      toast.error("Delete failed. Try again.");
     }
   };
 
   return (
-    <>
-      <div className="container  xl:mx-[9rem] sm:mx-[0]">
-        <div className="flex flex-col md:flex-row">
-          <AdminMenu />
-          <div className="md:w-3/4 p-3">
-            <div className="h-12">Update / Delete Product</div>
+    <div className="bg-darkBackground text-lightText min-h-screen pt-8">
+      <div className="container mx-auto px-4 py-8 animate-fadeIn">
+        <AdminMenu />
+        <div className="md:ml-20 p-3 w-full animate-slideInRight">
+          <h2 className="text-3xl font-bold text-primary mb-6 text-center">Update / Delete Product</h2>
 
-            {image && (
-              <div className="text-center">
-                <img
-                  src={image}
-                  alt="product"
-                  className="block mx-auto w-full h-[40%]"
-                />
+          {loadingProduct || loadingCategories ? (
+            <Loader />
+          ) : (
+            <form onSubmit={handleSubmit} className="bg-gray-900 p-6 rounded-lg shadow-xl animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+              {image && (
+                <div className="text-center mb-6">
+                  <img
+                    src={image}
+                    alt="product"
+                    className="block mx-auto max-h-48 rounded-lg shadow-md border border-gray-700"
+                  />
+                </div>
+              )}
+
+              <div className="mb-6">
+                <label className="bg-gray-800 border border-primary text-primary px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-6 hover:bg-primary hover:text-white transition-all duration-300 transform hover:scale-105">
+                  {image ? image : "Upload Image"}
+                  <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={uploadFileHandler}
+                    className="hidden"
+                  />
+                </label>
+                {uploadingImage && <Loader />}
               </div>
-            )}
 
-            <div className="mb-3">
-              <label className="text-white  py-2 px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
-                {image ? image.name : "Upload image"}
-                <input
-                  type="file"
-                  name="image"
-                  accept="image/*"
-                  onChange={uploadFileHandler}
-                  className="text-white"
-                />
-              </label>
-            </div>
-
-            <div className="p-3">
-              <div className="flex flex-wrap">
-                <div className="one">
-                  <label htmlFor="name">Name</label> <br />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label htmlFor="name" className="block text-lightText text-sm font-bold mb-2">Name</label>
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white mr-[5rem]"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
-
-                <div className="two">
-                  <label htmlFor="name block">Price</label> <br />
+                <div>
+                  <label htmlFor="price" className="block text-lightText text-sm font-bold mb-2">Price</label>
                   <input
                     type="number"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                   />
                 </div>
               </div>
 
-              <div className="flex flex-wrap">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label htmlFor="name block">Quantity</label> <br />
+                  <label htmlFor="quantity" className="block text-lightText text-sm font-bold mb-2">Quantity</label>
                   <input
                     type="number"
                     min="1"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white mr-[5rem]"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label htmlFor="name block">Brand</label> <br />
+                  <label htmlFor="brand" className="block text-lightText text-sm font-bold mb-2">Brand</label>
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
                   />
                 </div>
               </div>
 
-              <label htmlFor="" className="my-5">
-                Description
-              </label>
-              <textarea
-                type="text"
-                className="p-2 mb-3 bg-[#101011]  border rounded-lg w-[95%] text-white"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+              <div className="mb-6">
+                <label htmlFor="description" className="block text-lightText text-sm font-bold mb-2">Description</label>
+                <textarea
+                  type="text"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                ></textarea>
+              </div>
 
-              <div className="flex justify-between">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label htmlFor="name block">Count In Stock</label> <br />
+                  <label htmlFor="stock" className="block text-lightText text-sm font-bold mb-2">Count In Stock</label>
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                     value={stock}
                     onChange={(e) => setStock(e.target.value)}
                   />
                 </div>
-
                 <div>
-                  <label htmlFor="">Category</label> <br />
+                  <label htmlFor="category" className="block text-lightText text-sm font-bold mb-2">Category</label>
                   <select
                     placeholder="Choose Category"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white mr-[5rem]"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                     onChange={(e) => setCategory(e.target.value)}
                   >
-                    {categories?.map((c) => (
-                      <option key={c._id} value={c._id}>
-                        {c.name}
-                      </option>
-                    ))}
+                    {loadingCategories ? (
+                      <option>Loading Categories...</option>
+                    ) : (
+                      categories?.map((c) => (
+                        <option key={c._id} value={c._id}>
+                          {c.name}
+                        </option>
+                      ))
+                    )}
                   </select>
                 </div>
               </div>
 
-              <div className="">
+              <div className="flex justify-between mt-4">
                 <button
                   onClick={handleSubmit}
-                  className="py-4 px-10 mt-5 rounded-lg text-lg font-bold  bg-green-600 mr-6"
+                  className="bg-primary text-white py-3 px-6 rounded-full shadow-lg hover:bg-pink-700 transition-all duration-300 transform hover:scale-105"
+                  disabled={updatingProduct}
                 >
-                  Update
+                  {updatingProduct ? "Updating..." : "Update"}
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="py-4 px-10 mt-5 rounded-lg text-lg font-bold  bg-pink-600"
+                  className="bg-red-600 text-white py-3 px-6 rounded-full shadow-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
+                  disabled={deletingProduct}
                 >
-                  Delete
+                  {deletingProduct ? "Deleting..." : "Delete"}
                 </button>
               </div>
-            </div>
-          </div>
+            </form>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

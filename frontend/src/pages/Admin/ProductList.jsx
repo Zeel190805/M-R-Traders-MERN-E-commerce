@@ -7,6 +7,7 @@ import {
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
+import Loader from "../../components/Loader";
 
 const ProductList = () => {
   const [image, setImage] = useState("");
@@ -20,9 +21,9 @@ const ProductList = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const navigate = useNavigate();
 
-  const [uploadProductImage] = useUploadProductImageMutation();
-  const [createProduct] = useCreateProductMutation();
-  const { data: categories } = useFetchCategoriesQuery();
+  const [uploadProductImage, { isLoading: uploadingImage }] = useUploadProductImageMutation();
+  const [createProduct, { isLoading: creatingProduct }] = useCreateProductMutation();
+  const { data: categories, isLoading: loadingCategories } = useFetchCategoriesQuery();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +45,7 @@ const ProductList = () => {
         toast.error("Product create failed. Try Again.");
       } else {
         toast.success(`${data.name} is created`);
-        navigate("/");
+        navigate("/admin/allproductslist"); // Navigate to all products list after creation
       }
     } catch (error) {
       console.error(error);
@@ -67,25 +68,25 @@ const ProductList = () => {
   };
 
   return (
-    <div className="container xl:mx-[9rem] sm:mx-[0]">
-      <div className="flex flex-col md:flex-row">
+    <div className="bg-darkBackground text-lightText min-h-screen pt-8">
+      <div className="container mx-auto px-4 py-8 animate-fadeIn">
         <AdminMenu />
-        <div className="md:w-3/4 p-3">
-          <div className="h-12">Create Product</div>
+        <div className="md:ml-20 p-3 w-full animate-slideInRight">
+          <h2 className="text-3xl font-bold text-primary mb-6 text-center">Create Product</h2>
 
           {imageUrl && (
-            <div className="text-center">
+            <div className="text-center mb-6 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
               <img
                 src={imageUrl}
                 alt="product"
-                className="block mx-auto max-h-[200px]"
+                className="block mx-auto max-h-[200px] rounded-lg shadow-md border border-gray-700"
               />
             </div>
           )}
 
-          <div className="mb-3">
-            <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
-              {image ? image.name : "Upload Image"}
+          <div className="mb-6 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+            <label className="bg-gray-800 border border-primary text-primary px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-6 hover:bg-primary hover:text-white transition-all duration-300 transform hover:scale-105">
+              {image ? image : "Upload Image"}
 
               <input
                 type="file"
@@ -95,94 +96,100 @@ const ProductList = () => {
                 className={!image ? "hidden" : "text-white"}
               />
             </label>
+            {uploadingImage && <Loader />}
           </div>
 
-          <div className="p-3">
-            <div className="flex flex-wrap">
-              <div className="one">
-                <label htmlFor="name">Name</label> <br />
+          <form onSubmit={handleSubmit} className="p-3 bg-gray-900 rounded-lg shadow-xl animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label htmlFor="name" className="block text-lightText text-sm font-bold mb-2">Name</label>
                 <input
                   type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <div className="two ml-10 ">
-                <label htmlFor="name block">Price</label> <br />
+              <div>
+                <label htmlFor="price" className="block text-lightText text-sm font-bold mb-2">Price</label>
                 <input
                   type="number"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                 />
               </div>
             </div>
-            <div className="flex flex-wrap">
-              <div className="one">
-                <label htmlFor="name block">Quantity</label> <br />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label htmlFor="quantity" className="block text-lightText text-sm font-bold mb-2">Quantity</label>
                 <input
                   type="number"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                 />
               </div>
-              <div className="two ml-10 ">
-                <label htmlFor="name block">Brand</label> <br />
+              <div>
+                <label htmlFor="brand" className="block text-lightText text-sm font-bold mb-2">Brand</label>
                 <input
                   type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                 />
               </div>
             </div>
 
-            <label htmlFor="" className="my-5">
-              Description
-            </label>
-            <textarea
-              type="text"
-              className="p-2 mb-3 bg-[#101011] border rounded-lg w-[95%] text-white"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            ></textarea>
+            <div className="mb-6">
+              <label htmlFor="description" className="block text-lightText text-sm font-bold mb-2">Description</label>
+              <textarea
+                type="text"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></textarea>
+            </div>
 
-            <div className="flex justify-between">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label htmlFor="name block">Count In Stock</label> <br />
+                <label htmlFor="stock" className="block text-lightText text-sm font-bold mb-2">Count In Stock</label>
                 <input
                   type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
                 />
               </div>
-
               <div>
-                <label htmlFor="">Category</label> <br />
+                <label htmlFor="category" className="block text-lightText text-sm font-bold mb-2">Category</label>
                 <select
                   placeholder="Choose Category"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
                   onChange={(e) => setCategory(e.target.value)}
                 >
-                  {categories?.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.name}
-                    </option>
-                  ))}
+                  {loadingCategories ? (
+                    <option>Loading Categories...</option>
+                  ) : (
+                    categories?.map((c) => (
+                      <option key={c._id} value={c._id}>
+                        {c.name}
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
             </div>
 
             <button
               onClick={handleSubmit}
-              className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-pink-600"
+              className="bg-primary text-white py-3 px-6 rounded-full mt-4 shadow-lg hover:bg-pink-700 transition-all duration-300 transform hover:scale-105 w-full"
             >
-              Submit
+              {creatingProduct ? "Creating Product..." : "Submit"}
             </button>
-          </div>
+            {creatingProduct && <Loader />}
+          </form>
         </div>
       </div>
     </div>

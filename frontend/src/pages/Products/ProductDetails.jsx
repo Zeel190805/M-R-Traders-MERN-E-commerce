@@ -64,75 +64,58 @@ const ProductDetails = () => {
   };
 
   return (
-    <>
-      <div>
-        <Link
-          to="/"
-          className="text-white font-semibold hover:underline ml-[10rem]"
-        >
-          Go Back
-        </Link>
-      </div>
-
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant="danger">
-          {error?.data?.message || error.message}
-        </Message>
-      ) : (
-        <>
-          <div className="flex flex-wrap relative items-between mt-[2rem] ml-[10rem]">
-            <div>
+    <div className="bg-darkBackground text-lightText min-h-screen pt-8">
+      <div className="container mx-auto px-4 py-8 animate-fadeIn">
+        {isLoading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">
+            {error?.data?.message || error.message}
+          </Message>
+        ) : (
+          <div className="flex flex-wrap relative items-center mt-8 md:ml-10 justify-center lg:justify-start">
+            <div className="animate-slideInLeft mr-4 mb-8 lg:mb-0">
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full xl:w-[50rem] lg:w-[45rem] md:w-[30rem] sm:w-[20rem] mr-[2rem]"
+                className="w-full max-w-lg object-cover rounded-lg shadow-xl"
               />
 
               <HeartIcon product={product} />
             </div>
 
-            <div className="flex flex-col justify-between">
-              <h2 className="text-2xl font-semibold">{product.name}</h2>
-              <p className="my-4 xl:w-[35rem] lg:w-[35rem] md:w-[30rem] text-[#B0B0B0]">
+            <div className="flex flex-col justify-between p-4 bg-gray-900 rounded-lg shadow-xl animate-slideInRight flex-grow max-w-xl">
+              <h2 className="text-3xl font-bold text-primary mb-3">{product.name}</h2>
+              <p className="my-4 text-lightText leading-relaxed">
                 {product.description}
               </p>
 
-              <p className="text-5xl my-4 font-extrabold">$ {product.price}</p>
+              <p className="text-5xl my-4 font-extrabold text-primary">$ {product.price}</p>
 
-              <div className="flex items-center justify-between w-[20rem]">
-                <div className="one">
-                  <h1 className="flex items-center mb-6">
-                    <FaStore className="mr-2 text-white" /> Brand:{" "}
-                    {product.brand}
-                  </h1>
-                  <h1 className="flex items-center mb-6 w-[20rem]">
-                    <FaClock className="mr-2 text-white" /> Added:{" "}
-                    {moment(product.createAt).fromNow()}
-                  </h1>
-                  <h1 className="flex items-center mb-6">
-                    <FaStar className="mr-2 text-white" /> Reviews:{" "}
-                    {product.numReviews}
-                  </h1>
+              <div className="grid grid-cols-2 gap-4 text-lightText text-sm mb-6">
+                <div className="flex items-center">
+                  <FaStore className="mr-2 text-secondary" /> Brand:{" "}
+                  <span className="font-medium ml-1">{product.brand}</span>
                 </div>
-
-                <div className="two">
-                  <h1 className="flex items-center mb-6">
-                    <FaStar className="mr-2 text-white" /> Ratings: {rating}
-                  </h1>
-                  <h1 className="flex items-center mb-6">
-                    <FaShoppingCart className="mr-2 text-white" /> Quantity:{" "}
-                    {product.quantity}
-                  </h1>
-                  <h1 className="flex items-center mb-6 w-[10rem]">
-                    <FaBox className="mr-2 text-white" /> In Stock:{" "}
-                    {product.countInStock}
-                  </h1>
+                <div className="flex items-center">
+                  <FaClock className="mr-2 text-secondary" /> Added:{" "}
+                  <span className="font-medium ml-1">{moment(product.createAt).fromNow()}</span>
+                </div>
+                <div className="flex items-center">
+                  <FaStar className="mr-2 text-secondary" /> Reviews:{" "}
+                  <span className="font-medium ml-1">{product.numReviews}</span>
+                </div>
+                <div className="flex items-center">
+                  <FaShoppingCart className="mr-2 text-secondary" /> Quantity:{" "}
+                  <span className="font-medium ml-1">{product.quantity}</span>
+                </div>
+                <div className="flex items-center">
+                  <FaBox className="mr-2 text-secondary" /> In Stock:{" "}
+                  <span className="font-medium ml-1">{product.countInStock}</span>
                 </div>
               </div>
 
-              <div className="flex justify-between flex-wrap">
+              <div className="flex justify-between items-center flex-wrap mb-6">
                 <Ratings
                   value={product.rating}
                   text={`${product.numReviews} reviews`}
@@ -143,7 +126,7 @@ const ProductDetails = () => {
                     <select
                       value={qty}
                       onChange={(e) => setQty(e.target.value)}
-                      className="p-2 w-[6rem] rounded-lg text-black"
+                      className="p-2 w-24 rounded-lg text-black bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                       {[...Array(product.countInStock).keys()].map((x) => (
                         <option key={x + 1} value={x + 1}>
@@ -159,14 +142,14 @@ const ProductDetails = () => {
                 <button
                   onClick={addToCartHandler}
                   disabled={product.countInStock === 0}
-                  className="bg-pink-600 text-white py-2 px-4 rounded-lg mt-4 md:mt-0"
+                  className="bg-primary text-white py-3 px-6 rounded-full mt-4 md:mt-0 shadow-lg hover:bg-pink-700 transition-all duration-300 transform hover:scale-105"
                 >
                   Add To Cart
                 </button>
               </div>
             </div>
 
-            <div className="mt-[5rem] container flex flex-wrap items-start justify-between ml-[10rem]">
+            <div className="mt-12 w-full animate-fadeIn" style={{ animationDelay: '0.2s' }}>
               <ProductTabs
                 loadingProductReview={loadingProductReview}
                 userInfo={userInfo}
@@ -179,9 +162,9 @@ const ProductDetails = () => {
               />
             </div>
           </div>
-        </>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 };
 

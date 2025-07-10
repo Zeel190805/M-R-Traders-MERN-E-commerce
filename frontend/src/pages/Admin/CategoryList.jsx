@@ -10,17 +10,18 @@ import { toast } from "react-toastify";
 import CategoryForm from "../../components/CategoryForm";
 import Modal from "../../components/Modal";
 import AdminMenu from "./AdminMenu";
+import Loader from "../../components/Loader";
 
 const CategoryList = () => {
-  const { data: categories } = useFetchCategoriesQuery();
+  const { data: categories, refetch, isLoading } = useFetchCategoriesQuery();
   const [name, setName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [updatingName, setUpdatingName] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [createCategory] = useCreateCategoryMutation();
-  const [updateCategory] = useUpdateCategoryMutation();
-  const [deleteCategory] = useDeleteCategoryMutation();
+  const [createCategory, { isLoading: creatingCategory }] = useCreateCategoryMutation();
+  const [updateCategory, { isLoading: updatingCategory }] = useUpdateCategoryMutation();
+  const [deleteCategory, { isLoading: deletingCategory }] = useDeleteCategoryMutation();
 
   const handleCreateCategory = async (e) => {
     e.preventDefault();
@@ -37,6 +38,7 @@ const CategoryList = () => {
       } else {
         setName("");
         toast.success(`${result.name} is created.`);
+        refetch();
       }
     } catch (error) {
       console.error(error);
@@ -67,9 +69,11 @@ const CategoryList = () => {
         setSelectedCategory(null);
         setUpdatingName("");
         setModalVisible(false);
+        refetch();
       }
     } catch (error) {
       console.error(error);
+      toast.error("Updating category failed, try again.");
     }
   };
 
@@ -83,54 +87,61 @@ const CategoryList = () => {
         toast.success(`${result.name} is deleted.`);
         setSelectedCategory(null);
         setModalVisible(false);
+        refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Category delection failed. Tray again.");
+      toast.error("Category deletion failed. Try again.");
     }
   };
 
   return (
-    <div className="ml-[10rem] flex flex-col md:flex-row">
-      <AdminMenu />
-      <div className="md:w-3/4 p-3">
-        <div className="h-12">Manage Categories</div>
-        <CategoryForm
-          value={name}
-          setValue={setName}
-          handleSubmit={handleCreateCategory}
-        />
-        <br />
-        <hr />
+    <div className="bg-darkBackground text-lightText min-h-screen pt-8">
+      <div className="container mx-auto px-4 py-8 animate-fadeIn">
+        <AdminMenu />
+        <div className="md:ml-20 p-3 w-full animate-slideInRight">
+          <h2 className="text-3xl font-bold text-primary mb-6 text-center">Manage Categories</h2>
+          <CategoryForm
+            value={name}
+            setValue={setName}
+            handleSubmit={handleCreateCategory}
+            isLoading={creatingCategory}
+          />
+          <br />
+          <hr className="border-gray-700 my-6"/>
 
-        <div className="flex flex-wrap">
-          {categories?.map((category) => (
-            <div key={category._id}>
-              <button
-                className="bg-white border border-pink-500 text-pink-500 py-2 px-4 rounded-lg m-3 hover:bg-pink-500 hover:text-white focus:outline-none foucs:ring-2 focus:ring-pink-500 focus:ring-opacity-50"
-                onClick={() => {
-                  {
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <div className="flex flex-wrap justify-center gap-4 mt-8">
+              {categories?.map((category, index) => (
+                <button
+                  key={category._id}
+                  className="bg-gray-800 border border-primary text-primary py-3 px-6 rounded-lg shadow-md hover:bg-primary hover:text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 animate-fadeIn" 
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                  onClick={() => {
                     setModalVisible(true);
                     setSelectedCategory(category);
                     setUpdatingName(category.name);
-                  }
-                }}
-              >
-                {category.name}
-              </button>
+                  }}
+                >
+                  {category.name}
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
 
-        <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
-          <CategoryForm
-            value={updatingName}
-            setValue={(value) => setUpdatingName(value)}
-            handleSubmit={handleUpdateCategory}
-            buttonText="Update"
-            handleDelete={handleDeleteCategory}
-          />
-        </Modal>
+          <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+            <CategoryForm
+              value={updatingName}
+              setValue={(value) => setUpdatingName(value)}
+              handleSubmit={handleUpdateCategory}
+              buttonText="Update"
+              handleDelete={handleDeleteCategory}
+              isLoading={updatingCategory || deletingCategory}
+            />
+          </Modal>
+        </div>
       </div>
     </div>
   );

@@ -46,72 +46,74 @@ const Profile = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 mt-[10rem]">
-      <div className="flex justify-center align-center md:flex md:space-x-4">
-        <div className="md:w-1/3">
-          <h2 className="text-2xl font-semibold mb-4">Update Profile</h2>
-          <form onSubmit={submitHandler}>
-            <div className="mb-4">
-              <label className="block text-white mb-2">Name</label>
-              <input
-                type="text"
-                placeholder="Enter name"
-                className="form-input p-4 rounded-sm w-full"
-                value={username}
-                onChange={(e) => setUserName(e.target.value)}
-              />
-            </div>
+    <div className="bg-darkBackground text-lightText min-h-screen pt-8">
+      <div className="container mx-auto px-4 py-8 animate-fadeIn">
+        <div className="flex justify-center md:flex md:space-x-4">
+          <div className="w-full md:w-1/3 p-6 bg-gray-900 rounded-lg shadow-xl animate-slideInLeft">
+            <h2 className="text-3xl font-bold text-primary mb-6 text-center">Update Profile</h2>
+            <form onSubmit={submitHandler}>
+              <div className="mb-4">
+                <label className="block text-lightText text-sm font-bold mb-2">Name</label>
+                <input
+                  type="text"
+                  placeholder="Enter name"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
+                  value={username}
+                  onChange={(e) => setUserName(e.target.value)}
+                />
+              </div>
 
-            <div className="mb-4">
-              <label className="block text-white mb-2">Email Address</label>
-              <input
-                type="email"
-                placeholder="Enter email"
-                className="form-input p-4 rounded-sm w-full"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+              <div className="mb-4">
+                <label className="block text-lightText text-sm font-bold mb-2">Email Address</label>
+                <input
+                  type="email"
+                  placeholder="Enter email"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
 
-            <div className="mb-4">
-              <label className="block text-white mb-2">Password</label>
-              <input
-                type="password"
-                placeholder="Enter password"
-                className="form-input p-4 rounded-sm w-full"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+              <div className="mb-4">
+                <label className="block text-lightText text-sm font-bold mb-2">Password</label>
+                <input
+                  type="password"
+                  placeholder="Enter password"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
 
-            <div className="mb-4">
-              <label className="block text-white mb-2">Confirm Password</label>
-              <input
-                type="password"
-                placeholder="Confirm password"
-                className="form-input p-4 rounded-sm w-full"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
+              <div className="mb-6">
+                <label className="block text-lightText text-sm font-bold mb-2">Confirm Password</label>
+                <input
+                  type="password"
+                  placeholder="Confirm password"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 text-lightText border-gray-600 focus:ring-2 focus:ring-primary"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
 
-            <div className="flex justify-between">
-              <button
-                type="submit"
-                className="bg-pink-500 text-white py-2 px-4 rounded hover:bg-pink-600"
-              >
-                Update
-              </button>
+              <div className="flex justify-between items-center">
+                <button
+                  type="submit"
+                  className="bg-primary text-white py-2 px-4 rounded-full shadow-lg hover:bg-pink-700 transition-all duration-300 transform hover:scale-105"
+                >
+                  Update
+                </button>
 
-              <Link
-                to="/user-orders"
-                className="bg-pink-600 text-white py-2 px-4 rounded hover:bg-pink-700"
-              >
-                My Orders
-              </Link>
-            </div>
-            {loadingUpdateProfile && <Loader />}
-          </form>
+                <Link
+                  to="/user-orders"
+                  className="bg-secondary text-white py-2 px-4 rounded-full shadow-lg hover:bg-teal-700 transition-all duration-300 transform hover:scale-105"
+                >
+                  My Orders
+                </Link>
+              </div>
+              {loadingUpdateProfile && <Loader />}
+            </form>
+          </div>
         </div>
       </div>
     </div>

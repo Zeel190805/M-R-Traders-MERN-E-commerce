@@ -3,11 +3,18 @@
 @tailwind utilities;
 
 body {
-  background: #0f0f10;
-  color: #fff;
+  background: var(--color-darkBackground);
+  color: var(--color-lightText);
 }
 
 input,
 textarea {
   color: #000;
+}
+
+:root {
+  --color-primary: #FF6B6B;
+  --color-secondary: #4ECDC4;
+  --color-darkBackground: #1A1A2E;
+  --color-lightText: #E0E0E0;
 }

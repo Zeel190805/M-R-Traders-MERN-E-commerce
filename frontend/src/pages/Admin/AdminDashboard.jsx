@@ -89,57 +89,77 @@ const AdminDashboard = () => {
   }, [salesDetail]);
 
   return (
-    <>
-      <AdminMenu />
+    <div className="bg-darkBackground text-lightText min-h-screen pt-8">
+      <div className="container mx-auto px-4 py-8 animate-fadeIn">
+        <AdminMenu />
 
-      <section className="xl:ml-[4rem] md:ml-[0rem]">
-        <div className="w-[80%] flex justify-around flex-wrap">
-          <div className="rounded-lg bg-black p-5 w-[20rem] mt-5">
-            <div className="font-bold rounded-full w-[3rem] bg-pink-500 text-center p-3">
-              $
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="bg-gray-900 p-6 rounded-lg shadow-xl animate-slideInLeft">
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-primary rounded-full w-12 h-12 flex items-center justify-center">
+                <span className="text-white font-bold">$</span>
+              </div>
+              <h3 className="text-xl font-semibold text-primary">Total Sales</h3>
             </div>
-
-            <p className="mt-5">Sales</p>
-            <h1 className="text-xl font-bold">
-              $ {isLoading ? <Loader /> : sales.totalSales.toFixed(2)}
-            </h1>
+            <p className="text-3xl font-bold text-lightText">
+              ${isLoading ? <Loader /> : sales.totalSales.toFixed(2)}
+            </p>
           </div>
-          <div className="rounded-lg bg-black p-5 w-[20rem] mt-5">
-            <div className="font-bold rounded-full w-[3rem] bg-pink-500 text-center p-3">
-              $
-            </div>
 
-            <p className="mt-5">Customers</p>
-            <h1 className="text-xl font-bold">
-              $ {isLoading ? <Loader /> : customers?.length}
-            </h1>
+          <div className="bg-gray-900 p-6 rounded-lg shadow-xl animate-slideInLeft" style={{ animationDelay: '0.1s' }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-primary rounded-full w-12 h-12 flex items-center justify-center">
+                <span className="text-white font-bold">👥</span>
+              </div>
+              <h3 className="text-xl font-semibold text-primary">Customers</h3>
+            </div>
+            <p className="text-3xl font-bold text-lightText">
+              {loading ? <Loader /> : customers?.length}
+            </p>
           </div>
-          <div className="rounded-lg bg-black p-5 w-[20rem] mt-5">
-            <div className="font-bold rounded-full w-[3rem] bg-pink-500 text-center p-3">
-              $
-            </div>
 
-            <p className="mt-5">All Orders</p>
-            <h1 className="text-xl font-bold">
-              $ {isLoading ? <Loader /> : orders?.totalOrders}
-            </h1>
+          <div className="bg-gray-900 p-6 rounded-lg shadow-xl animate-slideInLeft" style={{ animationDelay: '0.2s' }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-primary rounded-full w-12 h-12 flex items-center justify-center">
+                <span className="text-white font-bold">📦</span>
+              </div>
+              <h3 className="text-xl font-semibold text-primary">Total Orders</h3>
+            </div>
+            <p className="text-3xl font-bold text-lightText">
+              {loadingTwo ? <Loader /> : orders?.totalOrders}
+            </p>
           </div>
         </div>
 
-        <div className="ml-[10rem] mt-[4rem]">
+        <div className="bg-gray-900 p-6 rounded-lg shadow-xl mb-12 animate-slideInRight">
+          <h2 className="text-2xl font-bold text-primary mb-6">Sales Trend</h2>
           <Chart
-            options={state.options}
+            options={{
+              ...state.options,
+              theme: {
+                mode: 'dark'
+              },
+              chart: {
+                ...state.options.chart,
+                background: '#1F2937',
+                foreColor: '#fff'
+              },
+              colors: ['#EC4899'],
+              grid: {
+                borderColor: '#374151'
+              }
+            }}
             series={state.series}
             type="bar"
-            width="70%"
+            height="400"
           />
         </div>
 
-        <div className="mt-[4rem]">
+        <div className="animate-fadeIn">
           <OrderList />
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 };
 
